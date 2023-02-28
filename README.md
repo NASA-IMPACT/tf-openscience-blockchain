@@ -15,3 +15,6 @@ bash deploy .env <<< plan
 ``` bash
 bash deploy .env <<< deploy
 ```
+
+## REF
+https://github.com/aws-samples/non-profit-blockchain/blob/master/ngo-fabric/README.md
