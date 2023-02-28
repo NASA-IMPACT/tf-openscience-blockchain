@@ -2,6 +2,10 @@
 Terraform module for Open Science blockchain
 
 # To deploy
+``` bash
+$cp .env.exemple .env
+Fill-in the required values 
+```
 ## Initialize the modules (onetime only)
 ``` bash
 bash deploy .env <<< init
