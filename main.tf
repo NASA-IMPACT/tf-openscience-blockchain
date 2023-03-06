@@ -4,8 +4,8 @@ module "managed_blockchain" {
   ec2_cli_configuration = var.ec2_cli_configuration
   member_admin_password = var.member_admin_password
   member_admin_username = var.member_admin_username
-  member_name = var.member_name
-  network_name = var.network_name
+  member_name = "m${var.prefix}"
+  network_name = "n${var.prefix}"
   prefix = var.prefix
   bc_peer_node_count = max(var.bc_peer_node_count, length(var.ec2_cli_configuration))
   subnet_id = var.subnet_id

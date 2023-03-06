@@ -24,15 +24,8 @@ variable "member_admin_password" {
   description = "The password of your member's admin user."
 }
 
-variable "member_name" {
-  type = string
-  default = "mmarouane"
-}
 
-variable "network_name" {
-  type = string
-  default = "nmarouane"
-}
+
 variable "prefix" {}
 variable "vpc_id" {}
 variable "subnet_id" {}

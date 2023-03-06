@@ -8,16 +8,16 @@ Fill-in the required values
 ```
 ## Initialize the modules (onetime only)
 ``` bash
-bash deploy .env <<< init
+bash deploy.sh .env <<< init
 ```
 
 ## To check the resources to be provisioned (optional)
 ``` bash
-bash deploy .env <<< plan
+bash deploy.sh .env <<< plan
 ```
 ## To deploy
 ``` bash
-bash deploy .env <<< deploy
+bash deploy.sh .env <<< deploy
 ```
 
 ## REF
