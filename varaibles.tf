@@ -8,8 +8,8 @@ variable "ec2_cli_configuration" {
   }))
   default = [
     {
-      channel_id="amchannel2"
-      channel_codename = "amch2"
+      channel_id="amarouane"
+      channel_codename = "mar"
       key_pair_name = "amarouane"
       instance_type = "t2.medium"
     }
@@ -31,9 +31,13 @@ variable "vpc_id" {}
 variable "subnet_id" {}
 
 variable "ami_id" {
-  default = "ami-0434d5878c6ad6d4c"
+  default = "ami-087de15a22879b9ef" #"ami-0434d5878c6ad6d4c"
 }
 
 variable "bc_peer_node_count" {
   default = 1
+}
+
+variable "s3_uri_bc_code" {
+  default = "s3://bc-chaincode-package/final.tar.gz"
 }
