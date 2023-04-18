@@ -1,0 +1,60 @@
+name: Deploy
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        type: string
+        required: true
+      env-file:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      aws-region:
+        type: string
+        required: true
+      role-session-name:
+        required: false
+        type: string
+        default: github-actions-deployment
+    secrets:
+      ASSUME_ROLE_ARNS:
+        required: true
+
+
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: "true"
+          submodules: "recursive"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.DEPLOYMENT_ROLE_ARN }}
+          role-session-name: ${{ inputs.role-session-name }}
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Deploy
+        run: |
+          aws s3 ls

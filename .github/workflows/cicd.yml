@@ -1,0 +1,72 @@
+name: CI/CD
+
+on: push
+
+jobs:
+
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: pip install black flake8
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          continue_on_error: false
+          black: true
+          flake8: true
+          flake8_args: "--ignore E1,E2,E3,E5,W1,W2,W3,W5" # black already handles formatting, this prevents conflicts
+
+  deploy-to-dev:
+    needs: run-linters
+    if: github.ref_name == 'dev'
+    concurrency: development
+    uses: "./.github/workflows/deploy.yml"
+    with:
+      environment: development
+      env-file: ".env_dev"
+      stage: "dev"
+      role-session-name: "openscience-blockchain-github-development-deployment"
+      aws-region: "us-west-2"
+
+    secrets: inherit
+
+  deploy-to-staging:
+    needs: run-linters
+    if: github.ref_name == 'smain'
+    concurrency: staging
+    uses: "./.github/workflows/deploy.yml"
+    with:
+      environment: staging
+      env-file: ".env_staging"
+      stage: "staging"
+      role-session-name: "openscience-blockchain-github-staging-deployment"
+      aws-region: "us-west-2"
+
+    secrets: inherit
+
+
+  deploy-to-production:
+    needs: run-linters
+    if: github.ref_name == 'deploy_to_mcp'
+    concurrency: staging
+    uses: "./.github/workflows/deploy.yml"
+    with:
+      environment: production
+      env-file: ".env_prod"
+      stage: "production"
+      role-session-name: "openscience-blockchain-github-production-deployment"
+      aws-region: "us-west-2"
+
+    secrets: inherit
