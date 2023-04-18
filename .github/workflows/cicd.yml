@@ -39,7 +39,6 @@ jobs:
       stage: "dev"
       role-session-name: "openscience-blockchain-github-development-deployment"
       aws-region: "us-west-2"
-
     secrets: inherit
 
   deploy-to-staging:
@@ -53,7 +52,6 @@ jobs:
       stage: "staging"
       role-session-name: "openscience-blockchain-github-staging-deployment"
       aws-region: "us-west-2"
-
     secrets: inherit
 
 
@@ -68,5 +66,4 @@ jobs:
       stage: "production"
       role-session-name: "openscience-blockchain-github-production-deployment"
       aws-region: "us-west-2"
-
     secrets: inherit
