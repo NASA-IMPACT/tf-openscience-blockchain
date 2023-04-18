@@ -23,9 +23,6 @@ on:
         required: false
         type: string
         default: github-actions-deployment
-    secrets:
-      ASSUME_ROLE_ARNS:
-        required: true
 
 
 
