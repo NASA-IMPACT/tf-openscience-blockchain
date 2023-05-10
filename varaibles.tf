@@ -8,9 +8,9 @@ variable "ec2_cli_configuration" {
   }))
   default = [
     {
-      channel_id="amarouane"
-      channel_codename = "mar"
-      key_pair_name = "amarouane"
+      channel_id="osbcdevchannel"
+      channel_codename = "devch"
+      key_pair_name = "os_bc_shared_dev"
       instance_type = "t2.medium"
     }
 
@@ -40,4 +40,8 @@ variable "bc_peer_node_count" {
 
 variable "s3_uri_bc_code" {
   default = "s3://bc-chaincode-package/final.tar.gz"
+}
+
+variable "storage_bucket" {
+
 }
