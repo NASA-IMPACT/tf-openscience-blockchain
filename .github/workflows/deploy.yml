@@ -24,8 +24,13 @@ on:
         type: string
         default: github-actions-deployment
     secrets:
-      ASSUME_ROLE_ARNS:
+      VPC_ID:
         required: true
+      SUBNET_ID:
+        required: true
+      MEMBER_ADMIN_PASSWORD:
+        required: true
+
 
 
 
@@ -34,6 +39,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      AWS_REGION: us-east-1
+      VPC_ID: ${{ secrets.VPC_ID }}
+      SUBNET_ID: ${{ secrets.SUBNET_ID }}
+      MEMBER_ADMIN_USERNAME: ${{ vars.MEMBER_ADMIN_USERNAME }}
+      MEMBER_ADMIN_PASSWORD: ${{ secrets.MEMBER_ADMIN_PASSWORD }}
+      STATE_BUCKET_NAME: ${{ vars.STATE_BUCKET_NAME }}
+      TF_VAR_storage_bucket: ${{ vars.STORAGE_BUCKET }}
+
 
     steps:
       - name: Checkout
@@ -55,6 +69,13 @@ jobs:
           role-session-name: ${{ inputs.role-session-name }}
           aws-region: ${{ inputs.aws-region }}
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.3.3
+
       - name: Deploy
         run: |
-          aws s3 ls
+          ./scripts/deploy.sh ${{ inputs.env-file }} <<< init
+          ./scripts/deploy.sh ${{ inputs.env-file }} <<< plan
+
