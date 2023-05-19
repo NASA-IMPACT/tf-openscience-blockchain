@@ -29,7 +29,7 @@ class User {
   async enroll(req, res, next) {
       this.username = req.headers.username;
       console.log(this.orgName, req.headers.orgName);
-      this.orgName = req.headers.orgName || this.orgName;
+      this.orgName = "VEDA"; //req.headers.orgName || this.orgName;
       let userResponse = await connection.getRegisteredUser(
         this.username,
         this.orgName,
