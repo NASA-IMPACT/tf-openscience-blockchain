@@ -129,7 +129,7 @@ const enrollNewUser = async (client, username) => {
 }
 
 const retrieveEnrolledUser = async (username, organization, isJson) => {
-  let client = await getClientForOrg(userorg);
+  let client = await getClientForOrg(organization);
   let user = await client.getUserContext(username, true);
   try {
     // Handle case when user is already enrolled.
