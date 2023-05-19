@@ -26,7 +26,7 @@ hfc.addConfigFile('config.json');
 
 
 const getClientForOrg = async (userorg, username) => {
-    let config = './connection-profile/ngo-connection-profile.yaml';
+    let config = './connection_profile/connection-profile.yaml';
     console.log(userorg);
     let orgLower = (userorg || "VEDA").toLowerCase();
     let clientConfig = './connection-profile/' + orgLower + '/client-' + orgLower + '.yaml';
