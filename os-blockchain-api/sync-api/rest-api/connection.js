@@ -27,7 +27,8 @@ hfc.addConfigFile('config.json');
 
 const getClientForOrg = async (userorg, username) => {
     let config = './connection-profile/ngo-connection-profile.yaml';
-    let orgLower = userorg.toLowerCase();
+    console.log(userorg);
+    let orgLower = (userorg || "VEDA").toLowerCase();
     let clientConfig = './connection-profile/' + orgLower + '/client-' + orgLower + '.yaml';
 
     // Load the connection profiles. First load the network settings, then load the client specific settings
