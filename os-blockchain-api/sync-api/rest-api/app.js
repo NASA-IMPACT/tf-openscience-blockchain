@@ -86,6 +86,7 @@ const authenticateUser = async (req, res, next) => {
       }
     }
     catch(err) {
+      console.log('Error:', err)
       next(new Error(500));
     }
   }
