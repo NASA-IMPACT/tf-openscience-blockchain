@@ -72,7 +72,7 @@ const authenticateUser = async (req, res, next) => {
     try {
       let userResponse = await connection.getRegisteredUser(
         req.headers.username,
-        req.headers.orgName,
+        req.headers.orgname,
         req.headers.password,
         true
       );
@@ -123,10 +123,7 @@ app.get(
 const user = new User(wss);
 
 app.post("/enroll", authenticateUser, awaitHandler(user.enroll));
-
-// create user endpoint
-app.post('/users' authenticateUser, awaitHandler(user.create);
-// get user details
+app.post("/users", authenticateUser, awaitHandler(user.create));
 app.get("/users/:username", authenticateUser, awaitHandler(user.getuser));
 
 // Metadata endpoints
