@@ -28,7 +28,7 @@ class User {
 
   async enroll(req, res, next) {
       this.username = req.headers.username;
-      this.orgName = req.headers.orgname || this.orgName;
+      this.orgName = req.headers.orgname; //req.headers.orgName || this.orgName;
       let userResponse = await connection.getRegisteredUser(
         this.username,
         this.orgName,
@@ -57,7 +57,7 @@ class User {
   }
 
   async create(req, res, next) {
-      var args = req.body;
+      var args = req.headers;
       var fcn = "createUser";
 
       let message = await chaincode.invoke(
@@ -66,7 +66,7 @@ class User {
         chaincodeName,
         args,
         fcn,
-        this.username,
+        req.headers.username,
         this.orgName
       );
       res.send(message);
