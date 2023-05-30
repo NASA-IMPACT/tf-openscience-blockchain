@@ -123,6 +123,10 @@ app.get(
 const user = new User(wss);
 
 app.post("/enroll", authenticateUser, awaitHandler(user.enroll));
+
+// create user endpoint
+app.post('/users' authenticateUser, awaitHandler(user.create);
+// get user details
 app.get("/users/:username", authenticateUser, awaitHandler(user.getuser));
 
 // Metadata endpoints
