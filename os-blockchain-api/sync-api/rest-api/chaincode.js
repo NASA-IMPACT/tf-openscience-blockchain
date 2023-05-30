@@ -21,7 +21,6 @@ var helper = require('./connection.js');
 
 async function sendProposal(request, channel) {
     let results = await channel.sendTransactionProposal(request);
-
     // the returned object has both the endorsement results
     // and the actual proposal, the proposal will be needed
     // later when we send a transaction to the ordering service
@@ -59,19 +58,17 @@ class Chaincode{
             }
             var txId = client.newTransactionID();
             txIdAsString = txId.getTransactionID();
-
             // send proposal to endorsing peers
             var request = {
                 targets: peerNames,
                 chaincodeId: chaincodeName,
                 fcn: fcn,
                 args: [JSON.stringify(args)],
-                chainId: channelName,
+                channelNames: [channelName],
                 txId: txId
             };
 
             var [proposal,proposalResponses,successfulResponses] = await sendProposal(request, channel);
-
             if (successfulResponses) {
                 // wait for the channel-based event hub to tell us
                 // that the commit was good or bad on each peer in our organization

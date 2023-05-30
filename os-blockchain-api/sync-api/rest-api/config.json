@@ -1,16 +1,16 @@
 {
     "host":"localhost",
-    "port":"3000",
-    "channelName":"%CHANNEL%",
-    "chaincodeName":"%CHAINCODENAME%",
+    "port":"80",
+    "channelName":"${CHANNEL_NAME}",
+    "chaincodeName":"${CHAINCODE_NAME}",
     "eventWaitTime":"30000",
     "peers":[
         "peer1"
     ],
     "admins":[
        {
-          "username":"%ADMINUSER%",
-          "secret":"%ADMINPWD%"
+          "username":"${USERNAME}",
+          "secret":"${PASSWORD}"
        }
     ]
  }
