@@ -235,7 +235,7 @@ class Metadata {
       description: args.description || "",
       published_by: orgName,
       authentic_source: orgName,
-      username: args.username,
+      username: username,
       citations: JSON.parse(args.citations),
       awsKey: attributes.key,
       dataHash: attributes.hash,
