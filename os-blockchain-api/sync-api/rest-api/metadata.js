@@ -11,8 +11,8 @@ class Metadata {
     this.datastore = new Datastore();
     this.chaincode = new Chaincode();
 
-    this.deets = user.getOrgAndUsername;
-
+    //this.deets = user.getOrgAndUsername;
+    this.deets = this.deets.bind(this);
     this.access = this.access.bind(this);
     this.getmetadata = this.getmetadata.bind(this);
     this.update = this.update.bind(this);
@@ -25,10 +25,14 @@ class Metadata {
     this.verifyFromS3 = this.verifyFromS3.bind(this);
   }
 
+  async deets(req) {
+    return {'username': req.headers.username, 'orgName': req.headers.orgname}
+  }
+
   async access(req, res, next) {
       // for now we use the username from the param. We can use authentication handler here to retrieve username later.
       // In future need to check if the user is present or not.
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
     let args = req.params;
     let fcn1 = "accessMetadata";
     let fcn2 = "getMetadata";
@@ -86,7 +90,7 @@ class Metadata {
   }
 
   async getmetadata(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
       // for now we use the username from the param. We can use authentication handler here to retrieve username later.
       // logger.info("================ GET on metadata by Id");
     let args = req.params;
@@ -105,7 +109,7 @@ class Metadata {
   }
 
   async update(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
       // logger.info("================ PATCH on metadata by Id");
     let args = { ...req.params, ...req.body };
     let fcn = "modifyMetadata";
@@ -141,7 +145,7 @@ class Metadata {
   }
 
   async upload(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
       // logger.info("================ POST on metadata");
     let args = req.body;
     let fcn = "createMetadata";
@@ -206,7 +210,8 @@ class Metadata {
 
 
   async uploadFromS3(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
+    console.log(username, orgName);
     let args = req.body;
     let fcn = "createMetadata";
     if (!args.citations) {
@@ -266,7 +271,7 @@ class Metadata {
 
 
   async gethistory(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
     let args = req.params;
     let fcn = "getHistory";
 
@@ -283,7 +288,7 @@ class Metadata {
   }
 
   async makecopy(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
     /**Req contains :
      * username : Username ,
      * metdataId : metadataId,
@@ -322,7 +327,7 @@ class Metadata {
   }
 
   async listallmetadata(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
     let args = req.params;
     let fcn = "getAllMetadata";
 
@@ -419,7 +424,7 @@ class Metadata {
   }
 
   async verify(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
     let args = req.body;
     let sel_args = { metadataId: args.metadataId };
     let fcn = "getMetadata";
@@ -445,7 +450,7 @@ class Metadata {
   }
 
   async verifyFromS3(req, res, next) {
-    let {username,orgName} = this.deets()
+    let {username,orgName} = await this.deets(req);
     let args = req.body;
     let sel_args = { metadataId: args.metadataId };
     let fcn = "getMetadata";
