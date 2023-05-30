@@ -12,8 +12,9 @@ const AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 
 const APP_CLIENT_ID = process.env.APP_CLIENT_ID;
+const ROLE_ARN = 'arn:aws:iam::853558080719:role/veda-blockchain-access';
 const ROLE_TO_ASSUME = {
-  RoleArn: 'arn:aws:iam::853558080719:role/veda-blockchain-access',
+  RoleArn: ROLE_ARN,
   RoleSessionName: 'veda-auth',
   DurationSeconds: 900,
 };
@@ -27,17 +28,14 @@ hfc.addConfigFile('config.json');
 
 const getClientForOrg = async (userorg, username) => {
     let config = './connection_profile/connection-profile.yaml';
-    console.log(userorg);
     let orgLower = (userorg || "VEDA").toLowerCase();
-    let clientConfig = './connection-profile/' + orgLower + '/client-' + orgLower + '.yaml';
-
+    let clientConfig = './connection_profile/' + orgLower + '/client-' + orgLower + '.yaml';
     // Load the connection profiles. First load the network settings, then load the client specific settings
     let client = hfc.loadFromConfig(config);
-    client.loadFromConfig(clientConfig);
 
+    client.loadFromConfig(clientConfig);
   // Create the state store and the crypto store
   await client.initCredentialStores();
-
   // Try and obtain the user from persistence if the user has previously been
   // registered and enrolled
   if(username) {
@@ -46,7 +44,6 @@ const getClientForOrg = async (userorg, username) => {
       throw new Error(util.format('##### getClient - User was not found :', username));
     }
   }
-
   return client;
 }
 
@@ -67,11 +64,10 @@ const jwtAuth = async (req) => {
 }
 
 
-const crossAccountCredentials = async (roleCreds={}, roleName='') => {
+const crossAccountCredentials = async (roleCreds, roleName) => {
   let roleToAssume = ROLE_TO_ASSUME;
-  roleToAssume['RoleArn'] = roleName || roleToAssume['RoleArn'];
+  roleToAssume['RoleArn'] = roleName || ROLE_ARN;
   roleToAssume['RoleSessionName'] = roleName ? "mcp_role_session" : roleToAssume['RoleSessionName'];
-
   let sts = new AWS.STS({apiVersion: '2011-06-15', ...roleCreds});
   return new Promise((resolve, reject) => {
     sts.assumeRole(roleToAssume, function(err, data) {
@@ -126,7 +122,8 @@ const enrollNewUser = async (client, username) => {
       { enrollmentID: username },
       adminUserObj
     );
-  return await client.setUserContext({username:username, password:secret});
+  let enrolledUser = await client.setUserContext({username:username, password:secret}, true);
+  return enrolledUser;
 }
 
 const retrieveEnrolledUser = async (username, organization, isJson) => {
@@ -136,11 +133,12 @@ const retrieveEnrolledUser = async (username, organization, isJson) => {
     // Handle case when user is already enrolled.
     if (user && user.isEnrolled){}
     else {
-       user = await enrollNewUser(client, username);
+      user = await enrollNewUser(client, username);
     }
+
     if (user && user.isEnrolled) {
       if (isJson && isJson === true) {
-        response = {
+        let response = {
           success: true,
           secret: user._enrollmentSecret,
           message: username + ' enrolled Successfully',
@@ -160,7 +158,6 @@ const retrieveEnrolledUser = async (username, organization, isJson) => {
 
 const getRegisteredUser = async (username, organization, password, isJson) => {
   let roleCreds = await crossAccountCredentials();
-
   let cognitoResponse = await cognitoUserAuthentication(roleCreds, username, password);
   if(cognitoResponse['success']) {
     let enrolledUser = await retrieveEnrolledUser(username, organization, isJson);
