@@ -1,15 +1,15 @@
 /*
 # Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License").
 # You may not use this file except in compliance with the License.
 # A copy of the License is located at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
-# or in the "license" file accompanying this file. This file is distributed 
-# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-# express or implied. See the License for the specific language governing 
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 #
 */
@@ -50,7 +50,9 @@ class Chaincode{
         var txIdAsString = null;
         try {
                 // first setup the client for this org
+	    console.log("****************************", peerNames, channelName, chaincodeName, args, fcn, username, orgName);
             var client = await helper.getClientForOrg(orgName, username);
+	    console.log(client.getUserContext(username, true));
             var channel = client.getChannel(channelName);
             if(!channel) {
                 let message = util.format('##### invokeChaincode - Channel %s was not defined in the connection profile', channelName);
@@ -124,19 +126,19 @@ class Chaincode{
                 for(let i in results) {
                     let event_hub_result = results[i];
                     if(typeof event_hub_result === 'string') {
-                    } 
+                    }
                     else {
                         if (!error_message) error_message = event_hub_result.toString();
                     }
                 }
-            } 
+            }
             else {
-                error_message = util.format('##### invokeChaincode - Failed to send Proposal and receive all good ProposalResponse. Status code: ' + 
-                    proposalResponses[0].status + ', ' + 
-                    proposalResponses[0].message + '\n' +  
+                error_message = util.format('##### invokeChaincode - Failed to send Proposal and receive all good ProposalResponse. Status code: ' +
+                    proposalResponses[0].status + ', ' +
+                    proposalResponses[0].message + '\n' +
                     proposalResponses[0].stack);
             }
-        } 
+        }
         catch (error) {
             error_message = error.toString();
         }
@@ -145,7 +147,7 @@ class Chaincode{
             let response = {};
             response.transactionId = txIdAsString;
             return response;
-        } 
+        }
         else {
             let message = util.format('##### invokeChaincode - Failed to invoke chaincode. cause:%s', error_message);
             throw new Error(message);
@@ -164,7 +166,7 @@ class Chaincode{
 
 			// send query
 			var request = {
-				targets : peers, 
+				targets : peers,
 				chaincodeId: chaincodeName,
 				fcn: fcn,
 				args: [JSON.stringify(args)]
@@ -181,29 +183,29 @@ class Chaincode{
 				let response = responses[0].toString('utf8');
 				if (responses[0].toString('utf8').indexOf("Error: transaction returned with failure") != -1) {
 					let message = util.format('##### queryChaincode - error in query result: %s', responses[0].toString('utf8'));
-					throw new Error(message);	
+					throw new Error(message);
 				}
 				// we will only use the first response. We strip out the Fabric key and just return the payload
 				let json = JSON.parse(responses[0].toString('utf8'));
 				if (Array.isArray(json)) {
 					for (let key in json) {
 						if (json[key]['Record']) {
-							ret.push(json[key]['Record']); 
-						} 
+							ret.push(json[key]['Record']);
+						}
 						else {
-							ret.push(json[key]); 
+							ret.push(json[key]);
 						}
 					}
 				}
 				else {
-					ret.push(json); 
+					ret.push(json);
 				}
 				return ret;
-			} 
+			}
 			else {
 				return 'responses is null';
 			}
-		} 
+		}
 		catch(error) {
 			return error.toString();
 		}

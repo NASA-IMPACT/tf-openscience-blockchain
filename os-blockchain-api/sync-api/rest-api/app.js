@@ -55,10 +55,10 @@ server.timeout = 240000;
    ws.on("message", function incoming(message) {
      console.log("##### Websocket Server received message: %s", message);
    });
- 
+
    ws.send("something");
  });
-  
+
 
 /**
  * Rest APIs
@@ -86,7 +86,7 @@ const authenticateUser = async (req, res, next) => {
       }
     }
     catch(err) {
-      console.log('Error:', err)
+      console.log(err);
       next(new Error(500));
     }
   }
@@ -123,7 +123,9 @@ app.get(
 const user = new User(wss);
 
 app.post("/enroll", authenticateUser, awaitHandler(user.enroll));
+
 app.post("/users", authenticateUser, awaitHandler(user.create));
+
 app.get("/users/:username", authenticateUser, awaitHandler(user.getuser));
 
 // Metadata endpoints
@@ -152,3 +154,4 @@ app.post("/verify/s3", authenticateUser, awaitHandler(metadata.verifyFromS3));
 app.use(function (error, req, res, next) {
   res.status(500).json({ error: error.toString() });
 });
+
