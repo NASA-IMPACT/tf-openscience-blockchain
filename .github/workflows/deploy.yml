@@ -24,7 +24,7 @@ on:
         type: string
         default: github-actions-deployment
     secrets:
-      ASSUME_ROLE_ARNS:
+      DEPLOYMENT_ROLE_ARN:
         required: true
 
 
@@ -34,6 +34,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      STAGE: ${{ inputs.stage }}
+      AWS_REGION: ${{ inputs.aws-region }}
+
+
 
     steps:
       - name: Checkout
