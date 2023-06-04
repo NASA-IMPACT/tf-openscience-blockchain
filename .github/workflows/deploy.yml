@@ -52,8 +52,8 @@ jobs:
         with:
           python-version: "3.10"
           cache: "pip"
-          run: |
-            pip install awscli
+
+      - run: pip install awscli
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
