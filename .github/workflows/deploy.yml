@@ -24,8 +24,10 @@ on:
         type: string
         default: github-actions-deployment
     secrets:
+
       DEPLOYMENT_ROLE_ARN:
         required: true
+
 
 
 
@@ -37,7 +39,6 @@ jobs:
     env:
       STAGE: ${{ inputs.stage }}
       AWS_REGION: ${{ inputs.aws-region }}
-
 
 
     steps:
@@ -60,6 +61,13 @@ jobs:
           role-session-name: ${{ inputs.role-session-name }}
           aws-region: ${{ inputs.aws-region }}
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.3.3
+
       - name: Deploy
         run: |
-          aws s3 ls
+          ./scripts/deploy.sh ${{ inputs.env-file }} <<< init
+          ./scripts/deploy.sh ${{ inputs.env-file }} <<< plan
+
