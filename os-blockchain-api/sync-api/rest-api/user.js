@@ -1,6 +1,9 @@
+const jwt = require("jsonwebtoken");
+
 const Chaincode = require("./chaincode.js");
-const { hfc } = require("./imports.js")
-const connection = require("./connection.js")
+const { hfc } = require("./imports.js");
+const connection = require("./connection.js");
+
 var blockListener = require('./blocklistener.js');
 
 var channelName = hfc.getConfigSetting('channelName');
@@ -9,11 +12,12 @@ var peers = hfc.getConfigSetting('peers');
 
 const chaincode = new Chaincode();
 
+
 class User {
   constructor(wss) {
 
     this.username = "";
-    this.orgName = "";
+    this.orgName = "VEDA";
     this.wss = wss;
     this.enroll = this.enroll.bind(this);
     this.getuser = this.getuser.bind(this);
@@ -22,17 +26,16 @@ class User {
 
   }
 
-  async enroll(req,res, next) {
-      this.username = req.body.username;
-      this.orgName = req.body.orgName;
-
-      let response = await connection.getRegisteredUser(
+  async enroll(req, res, next) {
+      this.username = req.headers.username;
+      this.orgName = req.headers.orgname; //req.headers.orgName || this.orgName;
+      let userResponse = await connection.getRegisteredUser(
         this.username,
         this.orgName,
+        req.headers.password,
         true
       );
-
-      if (response && typeof response !== "string") {
+      if (userResponse["success"]) {
         // Now that we have a username & org, we can start the block listener
         await blockListener.startBlockListener(
           channelName,
@@ -40,23 +43,21 @@ class User {
           this.orgName,
           this.wss
         );
-        res.json(response);
+        res.json(userResponse);
       } else {
-        res.json({ success: false, message: response });
+        res.json({ success: false, message: userResponse });
       }
   }
 
   async getuser(req, res, next) {
     let args = req.params;
     let fcn = "queryUser";
-    console.log(chaincodeName)
-    console.log("chaincodename should have been printed before ok sir ok bye")
     let message = await chaincode.query(peers, channelName, chaincodeName, args, fcn, this.username, this.orgName);
     res.send(message);
   }
 
   async create(req, res, next) {
-      var args = req.body;
+      var args = req.headers;
       var fcn = "createUser";
 
       let message = await chaincode.invoke(
@@ -65,15 +66,15 @@ class User {
         chaincodeName,
         args,
         fcn,
-        this.username,
+        req.headers.username,
         this.orgName
       );
       res.send(message);
   }
 
+
   getOrgAndUsername(){
-    console.log("Helloooo",this.orgName, this.username)
-    return {orgName:this.orgName, username: this.username};
+    return { orgName:this.orgName, username: this.username };
   }
 }
 

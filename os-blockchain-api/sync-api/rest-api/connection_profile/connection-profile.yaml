@@ -28,6 +28,12 @@ channels:
         eventSource: true
 
 organizations:
+  Veda:
+    mspid: %MEMBERID%
+    peers:
+      - peer1
+    certificateAuthorities:
+      - ca-veda
   Org1:
     mspid: %MEMBERID%
     peers:
@@ -53,7 +59,7 @@ peers:
       path: /opt/home/managedblockchain-tls-chain.pem
 
 certificateAuthorities:
-  ca-org1:
+  ca-veda:
     url: https://%CASERVICEENDPOINT%
     httpOptions:
       verify: false

@@ -46,7 +46,7 @@ var startBlockListener = async function(channelName, username, orgName, websocke
 		})
 
 	} catch (error) {
-		error_message = error.toString();
+		let error_message = error.toString();
 	}
 }
 

@@ -14,6 +14,10 @@ const {
 const Metadata = require("./metadata.js");
 const { User } = require("./user.js");
 const utils = require("./utils.js");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
+const connection = require("./connection.js");
 
 const awaitHandler = utils.awaitHandler;
 
@@ -22,13 +26,13 @@ const upload = multer({ storage: storage });
 
 hfc.addConfigFile("config.json");
 
-// var host = "localhost";
-var port = 3000;
 
-var app = express();
+let port = 3000;
+
+let app = express();
 app.options("*", cors());
 app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: false }));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(
@@ -40,7 +44,7 @@ app.use(function (req, res, next) {
   return next();
 });
 
-var server = http.createServer(app).listen(port, function () {});
+let server = http.createServer(app).listen(port, function () {});
 server.timeout = 240000;
 
 /**
@@ -51,14 +55,48 @@ server.timeout = 240000;
    ws.on("message", function incoming(message) {
      console.log("##### Websocket Server received message: %s", message);
    });
- 
+
    ws.send("something");
  });
-  
+
 
 /**
  * Rest APIs
  */
+
+const authenticateUser = async (req, res, next) => {
+  if(!req.headers.username || !req.headers.password) {
+    next(new Error(401))
+  }
+  else {
+    try {
+      let userResponse = await connection.getRegisteredUser(
+        req.headers.username,
+        req.headers.orgname,
+        req.headers.password,
+        true
+      );
+      if(userResponse.success) {
+        res.locals = {};
+        res.locals.user = userResponse;
+        next();
+      }
+      else {
+        next(new Error(401))
+      }
+    }
+    catch(err) {
+      console.log(err);
+      next(new Error(500));
+    }
+  }
+}
+
+app.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 
 // Root
 app.get(
@@ -84,26 +122,30 @@ app.get(
 // User endpoints
 const user = new User(wss);
 
-app.post("/enroll", awaitHandler(user.enroll));
-app.get("/users/:username", awaitHandler(user.getuser));
-app.post("/users", awaitHandler(user.create));
+app.post("/enroll", authenticateUser, awaitHandler(user.enroll));
+
+app.post("/users", authenticateUser, awaitHandler(user.create));
+
+app.get("/users/:username", authenticateUser, awaitHandler(user.getuser));
 
 // Metadata endpoints
 const metadata = new Metadata(user);
 
-app.get("/access/:metadataId&:username", awaitHandler(metadata.access));
+app.get("/access/:metadataId&:username", authenticateUser, awaitHandler(metadata.access));
 
-app.get("/metadata/:metadataId", awaitHandler(metadata.getmetadata));
-app.patch("/metadata/:metadataId", (upload.single("file"), awaitHandler(metadata.update)));
-app.post("/metadata", upload.single("file"), awaitHandler(metadata.upload));
+app.get("/metadata/:metadataId", authenticateUser, awaitHandler(metadata.getmetadata));
+app.patch("/metadata/:metadataId", authenticateUser, (upload.single("file"), awaitHandler(metadata.update)));
+app.post("/metadata", authenticateUser, upload.single("file"), awaitHandler(metadata.upload));
+app.post("/metadata/s3", authenticateUser, awaitHandler(metadata.uploadFromS3));
 
-app.get("/history/:metadataId", awaitHandler(metadata.gethistory));
+app.get("/history/:metadataId", authenticateUser, awaitHandler(metadata.gethistory));
 
-app.get("/listmetadata", awaitHandler(metadata.listallmetadata));
+app.get("/listmetadata", authenticateUser, awaitHandler(metadata.listallmetadata));
 
-app.get("/makeCopy", awaitHandler(metadata.makecopy));
+app.get("/makeCopy", authenticateUser, awaitHandler(metadata.makecopy));
 
-app.post("/verify", upload.single("file"), awaitHandler(metadata.verify));
+app.post("/verify", authenticateUser, upload.single("file"), awaitHandler(metadata.verify));
+app.post("/verify/s3", authenticateUser, awaitHandler(metadata.verifyFromS3));
 
 /************************************************************************************
  * Error handler
@@ -112,3 +154,4 @@ app.post("/verify", upload.single("file"), awaitHandler(metadata.verify));
 app.use(function (error, req, res, next) {
   res.status(500).json({ error: error.toString() });
 });
+

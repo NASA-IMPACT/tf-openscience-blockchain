@@ -12,6 +12,12 @@ variable "ec2_cli_configuration" {
       channel_codename = "devch"
       key_pair_name = "os_bc_shared_dev"
       instance_type = "t2.medium"
+    },
+        {
+      channel_id="sonewch"
+      channel_codename = "devnch"
+      key_pair_name = "os_bc_shared_dev"
+      instance_type = "t2.medium"
     }
 
   ]
@@ -27,11 +33,9 @@ variable "member_admin_password" {
 
 
 variable "prefix" {}
-variable "vpc_id" {}
-variable "subnet_id" {}
 
 variable "ami_id" {
-  default = "ami-087de15a22879b9ef" #"ami-0434d5878c6ad6d4c"
+  default = "ami-087de15a22879b9ef"
 }
 
 variable "bc_peer_node_count" {
@@ -43,5 +47,22 @@ variable "s3_uri_bc_code" {
 }
 
 variable "storage_bucket" {
+
+
+}
+
+variable "peernode_instance_type" {
+  description = "The type of compute instance to use for your peer nodes."
+  default     = "bc.t3.small"
+}
+
+variable "ecs_domain_name" {
+  default = "osblockchain.net"
+}
+
+variable "app_client_id" {
+
+}
+variable "user_pool_id" {
 
 }
