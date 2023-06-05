@@ -26,6 +26,10 @@ on:
     secrets:
       DEPLOYMENT_ROLE_ARN:
         required: true
+      MCP_ROLE:
+        required: true
+      ROLE_ARN:
+        required: true
 
 
 
@@ -45,6 +49,9 @@ jobs:
       STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
       APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
       USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
+      MCP_ROLE: ${{ secrets.MCP_ROLE }}
+      ROLE_ARN: ${{ secrets.ROLE_ARN }}
+
 
 
     steps:

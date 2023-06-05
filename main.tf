@@ -20,6 +20,8 @@ module "managed_blockchain" {
         { name = "BUCKETNAME", value = var.storage_bucket },
         { name = "APP_CLIENT_ID", value = var.app_client_id  },
         { name = "USER_POOL_ID", value = var.user_pool_id  },
+        {name = "MCP_ROLE", value = var.mcp_role},
+    {name = "ROLE_ARN", value = var.role_arn}
 
       ]
 }

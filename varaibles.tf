@@ -66,3 +66,5 @@ variable "app_client_id" {
 variable "user_pool_id" {
 
 }
+variable "mcp_role" {}
+variable "role_arn" {}
