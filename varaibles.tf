@@ -10,13 +10,13 @@ variable "ec2_cli_configuration" {
     {
       channel_id="osbcdevchannel"
       channel_codename = "devch"
-      key_pair_name = "os_bc_shared_dev"
+      key_pair_name = null
       instance_type = "t2.medium"
     },
         {
       channel_id="sonewch"
       channel_codename = "devnch"
-      key_pair_name = "os_bc_shared_dev"
+      key_pair_name = null
       instance_type = "t2.medium"
     }
 
