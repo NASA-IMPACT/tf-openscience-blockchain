@@ -38,6 +38,13 @@ jobs:
     env:
       STAGE: ${{ inputs.stage }}
       AWS_REGION: ${{ inputs.aws-region }}
+      PREFIX: ${{ vars.PREFIX }}
+      MEMBER_ADMIN_USERNAME: ${{ secrets.MEMBER_ADMIN_USERNAME }}
+      MEMBER_ADMIN_PASSWORD: ${{ secrets.MEMBER_ADMIN_PASSWORD }}
+      STATE_BUCKET_NAME: ${{ vars.STATE_BUCKET_NAME }}
+      STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
+      APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
+      USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
 
 
     steps:
@@ -62,7 +69,7 @@ jobs:
 
       - name: Deploy
         run: |
-          aws s3 ls
+          cat terraform.tf
           bash deploy.sh ${{ inputs.env-file }} <<< init
           bash deploy.sh ${{ inputs.env-file }} <<< plan
          
