@@ -78,5 +78,3 @@ jobs:
         run: |
           bash deploy.sh ${{ inputs.env-file }} <<< init
           bash deploy.sh ${{ inputs.env-file }} <<< deploy
-         
-
