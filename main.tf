@@ -10,7 +10,7 @@ module "managed_blockchain" {
   bc_peer_node_count        = 2
   ami_id                    = var.ami_id
   s3_uri_bc_code            = var.s3_uri_bc_code
-  ecs_container_folder_path = "${path.module}/os-blockchain-api/sync-api"
+  ecs_container_folder_path = "${path.module}/os-blockchain-api"
   storage_bucket            = var.storage_bucket
   ecs-cluster-name          = var.prefix
   ecs_domain_name           = var.ecs_domain_name
