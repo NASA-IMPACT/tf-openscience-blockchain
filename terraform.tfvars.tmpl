@@ -6,3 +6,12 @@ app_client_id="${APP_CLIENT_ID}"
 user_pool_id="${USER_POOL_ID}"
 mcp_role="${MCP_ROLE}"
 role_arn="${ROLE_ARN}"
+ec2_cli_configuration=[
+    {
+      channel_id       = "${CHANNEL_ID}"
+      channel_codename = "${CHANNEL_CODENAME}"
+      key_pair_name    = null
+      instance_type    = "t2.medium"
+    }
+
+  ]
