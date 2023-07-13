@@ -42,17 +42,8 @@ jobs:
     env:
       STAGE: ${{ inputs.stage }}
       AWS_REGION: ${{ inputs.aws-region }}
-      PREFIX: ${{ vars.PREFIX }}
-      MEMBER_ADMIN_USERNAME: ${{ secrets.MEMBER_ADMIN_USERNAME }}
-      MEMBER_ADMIN_PASSWORD: ${{ secrets.MEMBER_ADMIN_PASSWORD }}
-      STATE_BUCKET_NAME: ${{ vars.STATE_BUCKET_NAME }}
-      STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
-      APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
-      USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
-      MCP_ROLE: ${{ secrets.MCP_ROLE }}
       ROLE_ARN: ${{ secrets.ROLE_ARN }}
-      CHANNEL_CODENAME: ${{ vars.CHANNEL_CODENAME }}
-      CHANNEL_ID: ${{ vars.CHANNEL_ID }}
+
 
 
     steps:
@@ -85,6 +76,7 @@ jobs:
 
       - name: Deploy
         run: |
+          cat ${{ inputs.env-file }} >> .s_env
           cat .s_env
-          bash deploy.sh ${{ inputs.env-file }} <<< init
-          bash deploy.sh ${{ inputs.env-file }} <<< deploy
+          bash deploy.sh .s_env <<< init
+          bash deploy.sh .s_env <<< plan
