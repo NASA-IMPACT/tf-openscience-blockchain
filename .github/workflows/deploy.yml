@@ -70,6 +70,6 @@ jobs:
       - name: Deploy
         run: |
           cat ${{ inputs.env-file }} >> .s_env
-          cat .s_env
           bash deploy.sh .s_env <<< init
-          bash deploy.sh .s_env <<< plan
+          bash deploy.sh .s_env <<< deploy
+
