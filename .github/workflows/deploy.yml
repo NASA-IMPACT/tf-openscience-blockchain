@@ -69,6 +69,14 @@ jobs:
           role-to-assume: ${{ secrets.DEPLOYMENT_ROLE_ARN }}
           role-session-name: ${{ inputs.role-session-name }}
           aws-region: ${{ inputs.aws-region }}
+      - name: Get relevant environment configuration from aws secrets
+        shell: bash
+        env:
+          SECRET_SSM_NAME: ${{ vars.SECRET_SSM_NAME }}
+          AWS_DEFAULT_REGION: ${{ inputs.aws-region }}
+        run: |
+          aws secretsmanager get-secret-value --secret-id $SECRET_SSM_NAME --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .s_env
+
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -77,5 +85,6 @@ jobs:
 
       - name: Deploy
         run: |
+          cat .s_env
           bash deploy.sh ${{ inputs.env-file }} <<< init
           bash deploy.sh ${{ inputs.env-file }} <<< deploy
