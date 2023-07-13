@@ -35,38 +35,25 @@ jobs:
     uses: "./.github/workflows/deploy.yml"
     with:
       environment: development
-      env-file: ".env_dev"
+      env-file: ".envs"
       stage: "dev"
       role-session-name: "openscience-blockchain-github-development-deployment"
-      aws-region: "us-west-2"
-
-    secrets: inherit
-
-  deploy-to-staging:
-    needs: run-linters
-    if: github.ref_name == 'smain'
-    concurrency: staging
-    uses: "./.github/workflows/deploy.yml"
-    with:
-      environment: staging
-      env-file: ".env_staging"
-      stage: "staging"
-      role-session-name: "openscience-blockchain-github-staging-deployment"
-      aws-region: "us-west-2"
+      aws-region: "us-east-1"
 
     secrets: inherit
 
 
   deploy-to-production:
     needs: run-linters
-    if: github.ref_name == 'deploy_to_mcp'
+    if: github.ref_name == 'main'
     concurrency: staging
     uses: "./.github/workflows/deploy.yml"
     with:
       environment: production
-      env-file: ".env_prod"
+      env-file: ".envs"
       stage: "production"
       role-session-name: "openscience-blockchain-github-production-deployment"
-      aws-region: "us-west-2"
+      aws-region: "us-east-1"
+
 
     secrets: inherit

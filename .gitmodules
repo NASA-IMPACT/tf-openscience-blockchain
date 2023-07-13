@@ -1,0 +1,3 @@
+[submodule "os-blockchain-api"]
+	path = os-blockchain-api
+	url = https://github.com/NASA-IMPACT/os-blockchain-api.git
