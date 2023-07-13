@@ -10,7 +10,7 @@ ec2_cli_configuration=[
     {
       channel_id       = "${CHANNEL_ID}"
       channel_codename = "${CHANNEL_CODENAME}"
-      key_pair_name    = ${KEY_PAIR_NAME:-null}
+      key_pair_name    = "${KEY_PAIR_NAME:-null}"
       instance_type    = "t2.medium"
     }
 
