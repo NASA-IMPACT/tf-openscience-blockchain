@@ -42,7 +42,7 @@ variable "peernode_instance_type" {
   default     = "bc.t3.small"
 }
 variable "ecs_domain_name" {
-  default = "osblockchain.net"
+  description = "Hosted zone name"
 }
 variable "prefix" {}
 variable "storage_bucket" {}
