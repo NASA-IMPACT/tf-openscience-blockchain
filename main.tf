@@ -21,6 +21,8 @@ module "managed_blockchain" {
     { name = "APP_CLIENT_ID", value = var.app_client_id },
     { name = "USER_POOL_ID", value = var.user_pool_id },
     { name = "MCP_ROLE", value = var.mcp_role },
-    { name = "ROLE_ARN", value = var.role_arn }
+    { name = "ROLE_ARN", value = var.role_arn },
+    { name = "AUTH_TYPE", value = var.auth_type },
+    { name = "USER_DATA_S3_URI", value = var.user_data_s3_uri}
   ]
 }
