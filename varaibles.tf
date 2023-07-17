@@ -50,3 +50,5 @@ variable "app_client_id" {}
 variable "user_pool_id" {}
 variable "mcp_role" {}
 variable "role_arn" {}
+variable "auth_type" {}
+variable "user_data_s3_uri" {}
