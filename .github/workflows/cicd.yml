@@ -36,11 +36,9 @@ jobs:
         id: define_environment
         run: |
           if [ "${{ github.ref_name }}" == "main" ]; then
-            echo "env_name=production" >> $GITHUB_OUTPUT
+            echo "env_names=[\"production\", \"hec_deployment\"]" >> $GITHUB_OUTPUT
           elif [ "${{ github.ref_name }}" == "dev" ]; then
-            echo "env_name=development" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref_name }}" == "hec" ]; then
-            echo "env_name=hec_deployment" >> $GITHUB_OUTPUT
+            echo "env_names=[\"development\"]" >> $GITHUB_OUTPUT
           else
             echo "No environment associated with ${GITHUB_REF##*/} branch"
           fi
@@ -49,20 +47,28 @@ jobs:
         run: echo "The environment is ${{ steps.define_environment.outputs.env_name }}"
 
     outputs:
-      env_name: ${{ steps.define_environment.outputs.env_name }}
+      env_names: ${{ steps.define_environment.outputs.env_names }}
 
-  deploy-blockchain:
-    name: deploy to ✈️ ${{ needs.define-environment.outputs.env_name }} 🛩️
-    needs: define-environment
-    if: ${{ needs.define-environment.outputs.env_name }}
-    uses: "./.github/workflows/deploy.yml"
-    with:
-      environment: ${{ needs.define-environment.outputs.env_name }}
-      env-file: ".envs"
-      role-session-name: "openscience-blockchain-github-development-deployment"
-      aws-region: "us-east-1"
-
-    secrets: inherit
-
+#  deploy-blockchain:
+#    name: deploy to ✈️ ${{ needs.define-environment.outputs.env_name }} 🛩️
+#    needs: define-environment
+#    if: ${{ needs.define-environment.outputs.env_name }}
+#    uses: "./.github/workflows/deploy.yml"
+#    with:
+#      environment: ${{ needs.define-environment.outputs.env_name }}
+#      env-file: ".envs"
+#      role-session-name: "openscience-blockchain-github-development-deployment"
+#      aws-region: "us-east-1"
+#
+#    secrets: inherit
+  build:
+    needs: [ define-environment ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        value: ${{fromJson(needs.define-environment.outputs.env_names)}}
+    steps:
+      - run: |
+          echo "${{ matrix.value }}"
 
 
