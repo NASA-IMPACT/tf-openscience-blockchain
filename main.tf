@@ -1,6 +1,6 @@
 
 module "managed_blockchain" {
-  source                    = "https://github.com/NASA-IMPACT/tf_aws_managed_blockchain/releases/download/v1.1.9.debug/tf_aws_managed_blockchain.zip"
+  source                    = "https://github.com/NASA-IMPACT/tf_aws_managed_blockchain/releases/download/v1.1.9.0/tf_aws_managed_blockchain.zip"
   ec2_cli_configuration     = var.ec2_cli_configuration
   member_admin_password     = var.member_admin_password
   member_admin_username     = var.member_admin_username
@@ -21,6 +21,8 @@ module "managed_blockchain" {
     { name = "APP_CLIENT_ID", value = var.app_client_id },
     { name = "USER_POOL_ID", value = var.user_pool_id },
     { name = "MCP_ROLE", value = var.mcp_role },
-    { name = "ROLE_ARN", value = var.role_arn }
+    { name = "ROLE_ARN", value = var.role_arn },
+    { name = "AUTH_TYPE", value = var.auth_type },
+    { name = "USER_DATA_S3_URI", value = var.user_data_s3_uri}
   ]
 }
