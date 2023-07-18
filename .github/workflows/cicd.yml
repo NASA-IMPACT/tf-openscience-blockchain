@@ -52,6 +52,7 @@ jobs:
       env_name: ${{ steps.define_environment.outputs.env_name }}
 
   deploy-blockchain:
+    name: deploy to ✈️ ${{ needs.define-environment.outputs.env_name }} 🛩️
     needs: define-environment
     if: ${{ needs.define-environment.outputs.env_name }}
     uses: "./.github/workflows/deploy.yml"
