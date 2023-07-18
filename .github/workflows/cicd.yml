@@ -27,33 +27,43 @@ jobs:
           black: true
           flake8: true
           flake8_args: "--ignore E1,E2,E3,E5,W1,W2,W3,W5" # black already handles formatting, this prevents conflicts
-
-  deploy-to-dev:
+  define-environment:
+    name: Set ✨ environment ✨ based on the branch 🌳
+    runs-on: ubuntu-latest
     needs: run-linters
-    if: github.ref_name == 'dev'
-    concurrency: development
+    steps:
+      - name: Set the environment
+        id: define_environment
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "env_names=[\"production\", \"hec_deployment\"]" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_name }}" == "dev" ]; then
+            echo "env_names=[\"development\"]" >> $GITHUB_OUTPUT
+          else
+            echo "No environment associated with ${GITHUB_REF##*/} branch"
+          fi
+      - name: Print the environment
+        if: ${{ steps.define_environment.outputs.env_name }}
+        run: echo "The environment is ${{ steps.define_environment.outputs.env_name }}"
+
+    outputs:
+      env_names: ${{ steps.define_environment.outputs.env_names }}
+
+  deploy-blockchain:
+    needs: define-environment
+    name: Deploy to ✈️ ${{ matrix.value }} 🛩️
+    if: ${{ needs.define-environment.outputs.env_names }}
     uses: "./.github/workflows/deploy.yml"
+    strategy:
+      matrix:
+        value: ${{fromJson(needs.define-environment.outputs.env_names)}}
     with:
-      environment: development
+      environment: ${{ matrix.value }}
       env-file: ".envs"
-      stage: "dev"
-      role-session-name: "openscience-blockchain-github-development-deployment"
+      role-session-name: "openscience-blockchain-github-${{fromJson(needs.define-environment.outputs.env_names)}}-deployment"
       aws-region: "us-east-1"
 
     secrets: inherit
 
 
-  deploy-to-production:
-    needs: run-linters
-    if: github.ref_name == 'main'
-    concurrency: staging
-    uses: "./.github/workflows/deploy.yml"
-    with:
-      environment: production
-      env-file: ".envs"
-      stage: "production"
-      role-session-name: "openscience-blockchain-github-production-deployment"
-      aws-region: "us-east-1"
 
-
-    secrets: inherit
