@@ -1,6 +1,6 @@
 
 module "managed_blockchain" {
-  source                    = "https://github.com/NASA-IMPACT/tf_aws_managed_blockchain/releases/download/v1.1.9.debug/tf_aws_managed_blockchain.zip"
+  source                    = "https://github.com/NASA-IMPACT/tf_aws_managed_blockchain/releases/download/v1.1.9.0/tf_aws_managed_blockchain.zip"
   ec2_cli_configuration     = var.ec2_cli_configuration
   member_admin_password     = var.member_admin_password
   member_admin_username     = var.member_admin_username

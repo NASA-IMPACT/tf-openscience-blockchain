@@ -55,5 +55,16 @@ jobs:
       role-session-name: "openscience-blockchain-github-production-deployment"
       aws-region: "us-east-1"
 
+  deploy-to-hec:
+    needs: run-linters
+    if: github.ref_name == 'hec'
+    concurrency: staging
+    uses: "./.github/workflows/deploy.yml"
+    with:
+      environment: hec_deployment
+      env-file: ".envs"
+      stage: "production"
+      role-session-name: "openscience-blockchain-github-hec-deployment"
+      aws-region: "us-east-1"
 
     secrets: inherit
