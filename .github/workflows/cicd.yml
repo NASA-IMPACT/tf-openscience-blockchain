@@ -60,7 +60,7 @@ jobs:
     with:
       environment: ${{ matrix.value }}
       env-file: ".envs"
-      role-session-name: "openscience-blockchain-github-development-deployment"
+      role-session-name: "openscience-blockchain-github-${{fromJson(needs.define-environment.outputs.env_names)}}-deployment"
       aws-region: "us-east-1"
 
     secrets: inherit
