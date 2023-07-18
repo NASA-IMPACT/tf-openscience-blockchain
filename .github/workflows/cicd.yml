@@ -54,6 +54,7 @@ jobs:
       stage: "production"
       role-session-name: "openscience-blockchain-github-production-deployment"
       aws-region: "us-east-1"
+    secrets: inherit
 
   deploy-to-hec:
     needs: run-linters
