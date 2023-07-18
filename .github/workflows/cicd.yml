@@ -51,7 +51,7 @@ jobs:
 
   deploy-blockchain:
     needs: define-environment
-    name: ${{ matrix.value }}
+    name: Deploy to ✈️ ${{ matrix.value }} 🛩️
     if: ${{ needs.define-environment.outputs.env_names }}
     uses: "./.github/workflows/deploy.yml"
     strategy:
