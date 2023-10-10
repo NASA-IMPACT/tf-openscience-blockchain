@@ -39,6 +39,8 @@ jobs:
             echo "env_names=[\"production\", \"hec_deployment\"]" >> $GITHUB_OUTPUT
           elif [ "${{ github.ref_name }}" == "dev" ]; then
             echo "env_names=[\"development\"]" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_name }}" == "deploy-to-hec" ]; then
+            echo "env_names=[\"hec_deployment\"]" >> $GITHUB_OUTPUT
           else
             echo "No environment associated with ${GITHUB_REF##*/} branch"
           fi
